@@ -20,7 +20,7 @@
 .
 ├── Dockerfile
 ├── README.md
-├── container.config.json
+├── container.config.json  模板部署「服务设置」初始化配置（二开请忽略）
 ├── db.js
 ├── index.js
 ├── index.html
