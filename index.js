@@ -46,7 +46,7 @@ router.get("/api/count", async (ctx) => {
 // 小程序调用，获取微信 Open ID
 router.get("/api/wx_openid", async (ctx) => {
   if (ctx.request.headers["x-wx-source"]) {
-    ctx.body = req.headers["x-wx-openid"];
+    ctx.body = ctx.req.headers["x-wx-openid"];
   }
 });
 
