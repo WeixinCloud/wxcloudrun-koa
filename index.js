@@ -16,7 +16,7 @@ router.get("/", async (ctx) => {
 });
 Include private contributions on my profile
 // 一个用户发什么消息，就反弹什么消息的消息回复功能
-router.post('/message/post', async ctx => {
+router.post('/api/count', async ctx => {
   const { ToUserName, FromUserName, Content, CreateTime } = ctx.request.body;
 
   ctx.body = {
