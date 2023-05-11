@@ -2,6 +2,7 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const logger = require("koa-logger");
 const bodyParser = require("koa-bodyparser");
+const fetch = require('node-fetch');
 const fs = require("fs");
 const path = require("path");
 const { init: initDB, Counter } = require("./db");
@@ -48,6 +49,42 @@ router.get("/api/wx_openid", async (ctx) => {
   if (ctx.request.headers["x-wx-source"]) {
     ctx.body = ctx.request.headers["x-wx-openid"];
   }
+});
+
+async function getAIResponse(prompt) {
+  try {
+    const response = await fetch('https://openai.asherjia.cn/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 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',
+      },
+      body: JSON.stringify({
+        "model": "gpt-3.5-turbo",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7
+      }),
+    });
+    const completion = await response.json();
+    return (completion?.data?.choices?.[0].text || 'AI 挂了').trim();
+  } catch (error) {
+    return ('AI 挂了!').trim();
+  }
+}
+
+router.post('/message/post', async ctx => {
+  const { ToUserName, FromUserName, Content } = ctx.request.body;
+
+  const response = await getAIResponse(Content);
+  
+  ctx.body = {
+    ToUserName: FromUserName,
+    FromUserName: ToUserName,
+    CreateTime: +new Date(),
+    MsgType: 'text',
+    
+    Content: response,
+  };
 });
 
 const app = new Koa();
